@@ -1,0 +1,76 @@
+# ============================================================
+#  YC Launch Monitor — configuration
+#  Copy to config.yaml and fill in what you have.
+#  Every key is optional; the bot degrades gracefully.
+#  Secrets can also be set via environment variables (see README).
+# ============================================================
+
+# --- Slack alerting ------------------------------------------
+# RECOMMENDED: install the app from slack/manifest.yaml, then paste the bot
+# token (OAuth & Permissions -> Bot User OAuth Token, starts with xoxb-).
+#   channel: a channel name/ID (e.g. "#yc-launch-monitor" or "C0123ABC")
+#            OR your Slack user ID (e.g. "U0123ABC") to DM the bot's messages.
+# ALTERNATIVE: set webhook_url instead (legacy Incoming Webhook).
+slack:
+  bot_token: ""            # xoxb-...  (recommended)
+  webhook_url: ""          # https://hooks.slack.com/services/... (fallback)
+  channel: ""              # "#channel" or user ID for DM
+  username: "YC Launch Monitor"
+  mention: ""              # Slack user/group ID to @mention on alerts (optional)
+
+# --- Scheduling ----------------------------------------------
+# --loop polls every interval_minutes. Default 480 = every 8 hours (incremental).
+# You can also run `--once` from cron/launchd instead.
+schedule:
+  interval_minutes: 480
+
+# --- Data sources: toggles -----------------------------------
+sources:
+  yc_directory: true      # Y Combinator directory (free, no key)  -> CONFIRMED
+  speedrun: true          # a16z Speedrun (free, no key)           -> CONFIRMED
+  x_twitter: false        # X founder-announcement scan (needs key)-> EARLY
+  linkedin: false         # LinkedIn founder-announcement scan     -> EARLY
+
+# --- X (Twitter) — X API v2 ----------------------------------
+# Bearer token: https://developer.x.com (Basic tier ~$100/mo).
+# `recent` search covers ~7 days of tweets.
+x_twitter:
+  bearer_token: ""        # X API v2 Bearer token
+  query: >-
+    ("accepted into YC" OR "accepted into Y Combinator" OR "got into YC"
+    OR "got into Y Combinator" OR "i got into YC" OR "we're in YC"
+    OR "we are in YC" OR "joining the YC family" OR "thrilled to be part of YC"
+    OR "part of the new YC batch" OR "YC W27" OR "YC S26"
+    OR "Y Combinator W27" OR "Y Combinator S26"
+    OR "accepted into speedrun" OR "accepted into a16z speedrun"
+    OR "a16z speedrun cohort" OR "backed by Y Combinator") -is:retweet lang:en
+  max_results: 50
+  freshness_minutes: 480   # only alert on posts within the last 8h
+
+# --- LinkedIn ------------------------------------------------
+# No free public API. Point `endpoint` at a scraping/search adapter that
+# accepts POST {"query":..., "freshness_minutes":N} and returns
+# {"results":[{"author","text","url","published_at"}]}.
+linkedin:
+  endpoint: ""            # custom adapter URL (optional)
+  api_key: ""
+  query: >-
+    ("accepted into YC" OR "accepted into Y Combinator" OR "got into YC"
+    OR "thrilled to share we're part of YC" OR "new YC batch" OR "backed by Y Combinator")
+  freshness_minutes: 480
+
+# --- Detection -----------------------------------------------
+detection:
+  min_batch: ""           # optional filter, e.g. "Summer 2026"
+  lookback_batches: 3
+
+# --- State / storage -----------------------------------------
+state:
+  db_path: "state.db"     # SQLite file for dedup + state
+
+# --- Pond (joinpond.ai) --------------------------------------
+# Register your agent at https://joinpond.ai/agent/create and set agent_id.
+pond:
+  agent_id: ""            # your Pond agent id
+  report_path: "pond_report.json"   # machine-readable verification report
+  health_port: 0          # >0 (e.g. 8080) to expose GET /health for uptime monitoring

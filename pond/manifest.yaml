@@ -1,0 +1,29 @@
+# ============================================================
+#  Pond Agent Manifest — YC Launch Monitor
+#  Register at https://joinpond.ai/agent/create using this file
+#  so reviewers can verify the work and monitor its health.
+# ============================================================
+agent:
+  id: "yc-launch-monitor"          # replace with your Pond agent id
+  name: "YC Launch Monitor Slack Bot"
+  description: >
+    Continuously monitors the Y Combinator directory, a16z Speedrun, and social
+    media (X / LinkedIn) for new company launches and early founder announcements,
+    and posts real-time alerts to a Slack channel/DM.
+  version: "2.0.0"
+  capabilities:
+    - persistent_stateful_monitoring   # SQLite dedup + snapshots, survives restarts
+    - duplicate_detection              # stable dedup keys per event
+    - early_signal_detection           # founder announces before official listing
+    - multi_source_ingestion           # YC Directory, Speedrun, X, LinkedIn
+    - slack_delivery                   # OAuth bot token / webhook
+    - pluggable_platform_adapters      # add new social platforms later
+  verification:
+    - "Run: ./run.sh --once --dry-run   (prints alerts, writes pond_report.json)"
+    - "Report: pond_report.json contains sources_enabled, state, and alerts_this_run"
+    - "Health: set pond.health_port > 0 to expose GET /health for uptime checks"
+  sources:
+    yc_directory: "https://yc-oss.github.io/api/"
+    speedrun: "https://speedrun-api.a16z.com/api/companies/companies/"
+    x_twitter: "X API v2 recent search (requires bearer token)"
+    linkedin: "pluggable adapter (no free API)"

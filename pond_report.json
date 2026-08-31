@@ -1,0 +1,16 @@
+{
+  "agent": "",
+  "generated_at": "2026-08-31T07:32:39+00:00",
+  "sources_enabled": {
+    "yc_directory": true,
+    "speedrun": true,
+    "x_twitter": false,
+    "linkedin": false
+  },
+  "state": {
+    "seen_events": 1,
+    "snapshots": 2
+  },
+  "alerts_this_run": [],
+  "total_alerts_seen": 1
+}

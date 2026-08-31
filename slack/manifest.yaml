@@ -1,0 +1,35 @@
+# ============================================================
+#  YC Launch Monitor — Slack App Manifest
+#  Install into a SINGLE workspace:
+#    1. Go to https://api.slack.com/apps -> "Create New App" -> "From an app manifest"
+#    2. Paste this manifest (pick your workspace).
+#    3. App Home -> toggle "Always Show My Bot as Online" (optional).
+#    4. Install to Workspace.
+#    5. Copy the "Bot User OAuth Token" (xoxb-...) into config.yaml slack.bot_token
+#       and set slack.channel to your channel name/ID or your user ID for a DM.
+# ============================================================
+display_information:
+  name: YC Launch Monitor
+  description: "Alerts when new Y Combinator / a16z Speedrun companies launch, including founders who announce before the official listing."
+  background_color: "#1a1a2e"
+
+features:
+  bot_user:
+    display_name: YC Launch Monitor
+    always_online: true
+
+oauth_config:
+  scopes:
+    bot:
+      - chat:write
+      - chat:write.public
+      - channels:read
+      - groups:read
+      - im:read
+      - im:write
+
+settings:
+  org_deploy_enabled: false
+  socket_mode_enabled: false
+  token_rotation_enabled: false
+  # The bot only POSTS alerts; it does not need event subscriptions.

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  Persistent macOS runner for the YC Launch Monitor.
+  Runs `./run.sh --once` every 8 hours (StartInterval = 28800s).
+
+  Install:
+    cp deploy/com.yclaunchmonitor.plist ~/Library/LaunchAgents/
+    launchctl load ~/Library/LaunchAgents/com.yclaunchmonitor.plist
+    launchctl start com.yclaunchmonitor
+
+  Check logs:
+    tail -f /tmp/yclaunchmonitor.log
+    tail -f /tmp/yclaunchmonitor.err.log
+
+  Uninstall:
+    launchctl unload ~/Library/LaunchAgents/com.yclaunchmonitor.plist
+-->
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.yclaunchmonitor</string>
+
+  <key>ProgramArguments</key>
+  <array>
+    <string>/bin/bash</string>
+    <string>/Users/shk/yc-launch-monitor/run.sh</string>
+    <string>--once</string>
+  </array>
+
+  <!-- Every 8 hours -->
+  <key>StartInterval</key>
+  <integer>28800</integer>
+
+  <!-- Run once shortly after load -->
+  <key>RunAtLoad</key>
+  <true/>
+
+  <key>WorkingDirectory</key>
+  <string>/Users/shk/yc-launch-monitor</string>
+
+  <key>StandardOutPath</key>
+  <string>/tmp/yclaunchmonitor.log</string>
+  <key>StandardErrorPath</key>
+  <string>/tmp/yclaunchmonitor.err.log</string>
+
+  <key>EnvironmentVariables</key>
+  <dict>
+    <!-- Optional: override secrets without editing config.yaml -->
+    <key>YC_SLACK_BOT_TOKEN</key>
+    <string></string>
+    <key>YC_X_BEARER_TOKEN</key>
+    <string></string>
+  </dict>
+</dict>
+</plist>

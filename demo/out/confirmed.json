@@ -1,0 +1,67 @@
+{
+  "username": "YC Launch Monitor",
+  "blocks": [
+    {
+      "type": "header",
+      "text": {
+        "type": "plain_text",
+        "text": "\u2705 2weeks"
+      }
+    },
+    {
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": "*Source:* Speedrun\n*Status:* \u2705 Confirmed by official directory"
+      }
+    },
+    {
+      "type": "context",
+      "elements": [
+        {
+          "type": "mrkdwn",
+          "text": "*Cohort:* SR003   \u00b7   *Founder:* Brandon Dillon, Richard Foge"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": "Making breakout hits on the open web for you and your friends."
+      }
+    },
+    {
+      "type": "actions",
+      "elements": [
+        {
+          "type": "button",
+          "text": {
+            "type": "plain_text",
+            "text": "Original post \u2197"
+          },
+          "url": "https://speedrun.a16z.com/companies/2weeks",
+          "action_id": "original"
+        },
+        {
+          "type": "button",
+          "text": {
+            "type": "plain_text",
+            "text": "Website \u2197"
+          },
+          "url": "https://2weeks.games",
+          "action_id": "website"
+        }
+      ]
+    },
+    {
+      "type": "context",
+      "elements": [
+        {
+          "type": "mrkdwn",
+          "text": "Detected: 2026-08-31T07:29:30+00:00 UTC"
+        }
+      ]
+    }
+  ]
+}
