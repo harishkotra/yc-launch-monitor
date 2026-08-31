@@ -9,6 +9,36 @@ highest-value outreach signal.
 
 ---
 
+## Quick start on a new machine
+
+```bash
+# 1. Clone the repo
+git clone https://github.com/harishkotra/yc-launch-monitor.git
+cd yc-launch-monitor
+
+# 2. Create your config from the .env template
+cp .env.example .env
+#    then edit .env and fill in your secrets (Slack bot token, channel, X token...)
+
+# 3. Install & do a test run (dry-run prints alerts, sends nothing)
+./run.sh --once --dry-run
+
+# 4. Send real alerts to Slack
+./run.sh --once
+
+# 5. Run persistently (every 8h) — pick one:
+./run.sh --loop                      # foreground process
+# or install the macOS launchd agent:
+cp deploy/com.yclaunchmonitor.plist ~/Library/LaunchAgents/
+launchctl load ~/Library/LaunchAgents/com.yclaunchmonitor.plist
+```
+
+Configuration lives in **`.env`** (recommended) or **`config.yaml`** — see
+[Configuration reference](#configuration-reference-environment-variables) below.
+Secrets are never committed (both `.env` and `config.yaml` are gitignored).
+
+---
+
 ## What it does
 
 | Source | Type | Signal |
@@ -220,8 +250,12 @@ the classifier, dedup, and Slack delivery all work unchanged.
 | `YC_SLACK_BOT_TOKEN` | Slack bot token (overrides config) |
 | `YC_SLACK_WEBHOOK` | Slack webhook URL (fallback) |
 | `YC_SLACK_CHANNEL` | Channel name/ID or user ID |
+| `YC_SLACK_MENTION` | Slack user/group to @mention on alerts |
 | `YC_X_BEARER_TOKEN` | X API v2 bearer token |
 | `YC_LINKEDIN_API_KEY` | LinkedIn adapter API key |
+| `YC_LINKEDIN_ENDPOINT` | LinkedIn adapter endpoint |
 | `YC_POND_AGENT_ID` | Pond agent id |
+| `YC_SCHEDULE_INTERVAL_MINUTES` | Poll interval in minutes (default 480) |
 
-All secrets can live in `config.yaml` or the environment — never commit them.
+Secrets can live in `.env`, `config.yaml`, or the environment — never commit them.
+

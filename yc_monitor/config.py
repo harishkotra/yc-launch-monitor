@@ -6,6 +6,12 @@ from typing import Optional
 
 import yaml
 
+try:
+    from dotenv import load_dotenv
+    load_dotenv()  # loads .env if present (values feed into os.environ below)
+except Exception:  # pragma: no cover - dotenv is optional
+    pass
+
 
 DEFAULTS = {
     "slack": {
@@ -62,10 +68,16 @@ def load_config(path: Optional[str] = None) -> dict:
         cfg["slack"]["webhook_url"] = os.environ["YC_SLACK_WEBHOOK"]
     if os.environ.get("YC_SLACK_CHANNEL"):
         cfg["slack"]["channel"] = os.environ["YC_SLACK_CHANNEL"]
+    if os.environ.get("YC_SLACK_MENTION"):
+        cfg["slack"]["mention"] = os.environ["YC_SLACK_MENTION"]
     if os.environ.get("YC_X_BEARER_TOKEN"):
         cfg["x_twitter"]["bearer_token"] = os.environ["YC_X_BEARER_TOKEN"]
     if os.environ.get("YC_LINKEDIN_API_KEY"):
         cfg["linkedin"]["api_key"] = os.environ["YC_LINKEDIN_API_KEY"]
+    if os.environ.get("YC_LINKEDIN_ENDPOINT"):
+        cfg["linkedin"]["endpoint"] = os.environ["YC_LINKEDIN_ENDPOINT"]
     if os.environ.get("YC_POND_AGENT_ID"):
         cfg["pond"]["agent_id"] = os.environ["YC_POND_AGENT_ID"]
+    if os.environ.get("YC_SCHEDULE_INTERVAL_MINUTES"):
+        cfg["schedule"]["interval_minutes"] = int(os.environ["YC_SCHEDULE_INTERVAL_MINUTES"])
     return cfg
