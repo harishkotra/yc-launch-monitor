@@ -110,27 +110,55 @@ def _tick(cfg: dict, state: State, client: SlackClient) -> None:
 
 
 def _send_test_alert(client: SlackClient, cfg: dict) -> None:
-    """Post a sample alert to Slack so the user can verify delivery + capture a screenshot."""
-    from .models import Alert, STATUS_EARLY, STATUS_CONFIRMED
+    """Post REAL sample alerts to Slack so the user can verify delivery + capture a screenshot.
+
+    Uses live data, not placeholders:
+      * CONFIRMED -> the newest real a16z Speedrun company (real founders/cohort/link).
+      * EARLY     -> a real founder-announcement post (the X example from the brief).
+    """
+    from .sources import speedrun
+    from .detector import Post, classify_post
+    from .index import build_index
+
     if not client.enabled:
         print("[test-alert] no Slack bot token or webhook configured — nothing to send.")
         print("            Set YC_SLACK_BOT_TOKEN + YC_SLACK_CHANNEL in .env first.")
         return
-    samples = [
-        Alert(
-            company="Acme AI", source="X (Twitter)", status=STATUS_EARLY,
-            founder="Jane Doe", details=("big news: we got into Y Combinator! "
-                                         "Solo founders, on our 4th attempt. Heading to SF."),
-            link="https://x.com/example/status/123456",
-            dedup_key="test|early", extra={"author_handle": "janedoe", "batch": "YC (not yet officially listed)"},
-        ),
-        Alert(
-            company="Example Labs", source="YC Directory", status=STATUS_CONFIRMED,
-            founder="", details="AI agents for logistics companies.",
-            link="https://www.ycombinator.com/companies/example",
-            dedup_key="test|confirmed", extra={"batch": "YC S26"},
-        ),
-    ]
+
+    samples = []
+
+    # --- CONFIRMED: newest real Speedrun company (has founders) ---
+    try:
+        recs = speedrun._fetch_all_pages()
+        rec = next((r for r in recs if r.get("founder_set")), None)
+        if rec:
+            samples.append(speedrun._company_to_alert(rec))
+        else:
+            print("[test-alert] could not fetch a real Speedrun company for the confirmed sample")
+    except Exception as e:  # noqa: BLE001
+        print(f"[test-alert] Speedrun fetch failed for confirmed sample: {e!r}")
+
+    # --- EARLY: real founder-announcement post, classified against the live index ---
+    try:
+        from .sources import yc_directory
+        idx = build_index(yc_directory.fetch_all_companies(), speedrun._fetch_all_pages())
+        early = classify_post(Post(
+            source="X (Twitter)", author="Bek", author_handle="beknabdik",
+            text=("big news: i got into Y Combinator. solo founder, on my 4th attempt. "
+                  "i fell in love with coding in 6th grade in Nukus, Uzbekistan, a city most "
+                  "people can't find on a map. now i'm going to SF to build."),
+            url="https://x.com/beknabdik/status/2061493360150601738",
+            post_id="2061493360150601738",
+        ), idx)
+        early.extra["batch"] = "YC (not yet officially listed)"
+        samples.append(early)
+    except Exception as e:  # noqa: BLE001
+        print(f"[test-alert] early-signal classification failed: {e!r}")
+
+    if not samples:
+        print("[test-alert] no real samples could be built — check network / sources.")
+        return
+
     sent = 0
     for a in samples:
         try:
@@ -141,7 +169,7 @@ def _send_test_alert(client: SlackClient, cfg: dict) -> None:
                 print(f"[test-alert] FAILED to send {a.company}")
         except Exception as e:  # noqa: BLE001
             print(f"[test-alert] error sending {a.company}: {e!r}")
-    print(f"[test-alert] delivered {sent}/{len(samples)} sample alerts to Slack")
+    print(f"[test-alert] delivered {sent}/{len(samples)} REAL sample alerts to Slack")
 
 
 def main(argv=None) -> int:
