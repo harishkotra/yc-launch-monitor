@@ -1,8 +1,6 @@
-# 🚀 YC Launch Monitor — Slack Bot
+# YC Launch Monitor — Slack Bot
 
-A personal Slack bot that keeps you ahead of **every new Y Combinator and a16z
-Speedrun company launch** — so you can reach founders early for pipeline and
-outreach, before everyone else.
+A personal Slack bot that keeps you ahead of **every new Y Combinator and a16z Speedrun company launch** — so you can reach founders early for pipeline and outreach, before everyone else.
 
 It continuously monitors four sources and posts **real-time alerts to Slack**
 whenever a new company is detected. Crucially, it **flags founders who announce
@@ -20,19 +18,13 @@ highest-value outreach signal.
 | **X (Twitter)** | Social | Founder posts mentioning YC/Speedrun → ⚡ **Early** (if not yet officially listed) |
 | **LinkedIn** | Social | Founder posts referencing YC/Speedrun → ⚡ **Early** (if not yet officially listed) |
 
-> **Note on "Speedrun":** Speedrun is the **a16z accelerator** (speedrun.a16z.com),
-> a distinct program from Y Combinator. This bot monitors it separately and tags
-> alerts with its own source + cohort, exactly as requested.
+> **Note on "Speedrun":** Speedrun is the **a16z accelerator** (speedrun.a16z.com), a distinct program from Y Combinator. This bot monitors it separately and tags alerts with its own source + cohort, exactly as requested.
 
 ### Two alert types
-- **⚡ EARLY SIGNAL** — a founder announced their acceptance on social media, but
-  the company is **not yet in the official YC/Speedrun directory**. This is the
-  "get ahead of everyone" signal.
-- **✅ CONFIRMED** — the company is now officially listed in the YC directory or
-  Speedrun program.
+- **⚡ EARLY SIGNAL** — a founder announced their acceptance on social media, but the company is **not yet in the official YC/Speedrun directory**. This is the "get ahead of everyone" signal.
+- **✅ CONFIRMED** — the company is now officially listed in the YC directory or Speedrun program.
 
-Each alert includes: **company, founder, batch/cohort, source, status, a
-description, and links** (original post + website + YC/Speedrun profile).
+Each alert includes: **company, founder, batch/cohort, source, status, a description, and links** (original post + website + YC/Speedrun profile).
 
 ---
 
@@ -233,8 +225,3 @@ the classifier, dedup, and Slack delivery all work unchanged.
 | `YC_POND_AGENT_ID` | Pond agent id |
 
 All secrets can live in `config.yaml` or the environment — never commit them.
-
----
-
-## License
-MIT — free to use, modify, and extend.
